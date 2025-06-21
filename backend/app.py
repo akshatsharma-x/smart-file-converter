@@ -33,15 +33,31 @@ def allowed_file(filename):
 def convert_pdf_to_pptx(pdf_path, pptx_path):
     prs = Presentation()
     doc = fitz.open(pdf_path)
+    max_blocks_per_slide = 8  
+    margin_top = Pt(40)
+    margin_left = Pt(40)
+    box_height = Pt(60)  
+    box_spacing = Pt(20)  
+    slide_width = prs.slide_width
+    slide_height = prs.slide_height
+
     for page_num in range(len(doc)):
         page = doc.load_page(page_num)
-        pix = page.get_pixmap()
-        img_path = pptx_path + f'_page_{page_num}.png'
-        pix.save(img_path)
-        slide = prs.slides.add_slide(prs.slide_layouts[6])  
-        left = top = Inches(0)
-        pic = slide.shapes.add_picture(img_path, left, top, width=prs.slide_width, height=prs.slide_height)
-        os.remove(img_path)
+        blocks = [block for block in page.get_text("blocks") if block[4].strip()]
+        i = 0
+        while i < len(blocks):
+            slide = prs.slides.add_slide(prs.slide_layouts[6])  
+            y = margin_top
+            blocks_on_slide = 0
+            while i < len(blocks) and blocks_on_slide < max_blocks_per_slide:
+                text = blocks[i][4].strip()
+                if y + box_height > slide_height - margin_top:
+                    break
+                textbox = slide.shapes.add_textbox(margin_left, y, slide_width - 2*margin_left, box_height)
+                textbox.text = text
+                y += box_height + box_spacing
+                i += 1
+                blocks_on_slide += 1
     prs.save(pptx_path)
 
 
