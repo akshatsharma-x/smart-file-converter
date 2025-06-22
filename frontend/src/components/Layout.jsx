@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Menu, X, FileText, Moon, Sun } from 'lucide-react'
+import { Menu, X, FileText, Moon, Sun, Sparkles } from 'lucide-react'
 import { useTheme } from '../hooks/useTheme'
 
 const Layout = ({ children }) => {
@@ -23,10 +23,13 @@ const Layout = ({ children }) => {
         <div className="container">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2">
-              <FileText className="h-8 w-8 text-primary-600" />
-              <span className="text-xl font-bold text-secondary-900 dark:text-white">
-                PDF Converter
+            <Link to="/" className="flex items-center space-x-2 group">
+              <div className="relative">
+                <FileText className="h-8 w-8 text-primary-600 group-hover:scale-110 transition-transform duration-200" />
+                <Sparkles className="h-3 w-3 text-accent-500 absolute -top-1 -right-1 animate-pulse" />
+              </div>
+              <span className="text-xl font-bold font-heading text-secondary-900 dark:text-white">
+                PDF2PPT.AI
               </span>
             </Link>
 
@@ -36,10 +39,10 @@ const Layout = ({ children }) => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     item.current
-                      ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                      : 'text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white'
+                      ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300 shadow-sm'
+                      : 'text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white hover:bg-secondary-50 dark:hover:bg-secondary-800'
                   }`}
                 >
                   {item.name}
@@ -49,7 +52,8 @@ const Layout = ({ children }) => {
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white transition-colors"
+                className="p-2 rounded-lg text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white transition-all duration-200 hover:bg-secondary-100 dark:hover:bg-secondary-800"
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               >
                 {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </button>
@@ -59,13 +63,15 @@ const Layout = ({ children }) => {
             <div className="md:hidden flex items-center space-x-2">
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white transition-colors"
+                className="p-2 rounded-lg text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white transition-all duration-200"
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               >
                 {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </button>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-lg text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white transition-colors"
+                className="p-2 rounded-lg text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white transition-all duration-200"
+                aria-label="Toggle menu"
               >
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
@@ -86,10 +92,10 @@ const Layout = ({ children }) => {
                     key={item.name}
                     to={item.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
+                    className={`block px-3 py-2 rounded-lg text-base font-medium transition-all duration-200 ${
                       item.current
                         ? 'bg-primary-100 text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-                        : 'text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white'
+                        : 'text-secondary-600 hover:text-secondary-900 dark:text-secondary-300 dark:hover:text-white hover:bg-secondary-50 dark:hover:bg-secondary-800'
                     }`}
                   >
                     {item.name}
@@ -109,8 +115,10 @@ const Layout = ({ children }) => {
       {/* Footer */}
       <footer className="bg-white dark:bg-secondary-900 border-t border-secondary-200 dark:border-secondary-700">
         <div className="container py-8">
-          <div className="text-center text-secondary-600 dark:text-secondary-400">
-            <p>&copy; 2025 PDF Converter. Built with React & Tailwind CSS.</p>
+          <div className="text-center">
+            <p className="text-xs text-secondary-400 uppercase tracking-wider font-medium">
+              © 2025 PDF2PPT.AI — Built with ❤️ and AI
+            </p>
           </div>
         </div>
       </footer>
