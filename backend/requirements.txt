@@ -3,3 +3,4 @@ flask-cors
 python-pptx
 PyMuPDF
 werkzeug
+gunicorn
