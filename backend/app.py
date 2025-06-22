@@ -145,5 +145,10 @@ def health():
     return jsonify({'status': 'ok'})
 
 
+@app.route('/', methods=['GET'])
+def index():
+    return 'Smart File Converter Backend is running!'
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)
