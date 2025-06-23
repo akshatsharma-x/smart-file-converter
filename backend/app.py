@@ -18,7 +18,11 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['CONVERTED_FOLDER'] = CONVERTED_FOLDER
 
-CORS(app, origins=["http://localhost:3000"])  # adjust the origin as needed for your frontend
+# allow both localhost and production frontend for CORS
+CORS(app, origins=[
+    "http://localhost:3000",
+    "https://smart-file-converter.vercel.app",  
+])
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(CONVERTED_FOLDER, exist_ok=True)

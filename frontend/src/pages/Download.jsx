@@ -1,27 +1,44 @@
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Download as DownloadIcon, FileText, CheckCircle, RotateCcw, Sparkles } from 'lucide-react'
-import toast from 'react-hot-toast'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/Card'
-import Button from '../components/Button'
-import StepIndicator from '../components/StepIndicator'
-import { useConversionStore } from '../hooks/useConversionStore'
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  Download as DownloadIcon,
+  FileText,
+  CheckCircle,
+  RotateCcw,
+  Sparkles,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "../components/Card";
+import Button from "../components/Button";
+import StepIndicator from "../components/StepIndicator";
+import { useConversionStore } from "../hooks/useConversionStore";
+import { downloadFile } from "../services/api";
 
 const Download = () => {
-  const { file, resultUrl, reset } = useConversionStore()
+  const { file, uploadId, reset } = useConversionStore();
 
-  const handleDownload = () => {
-    if (resultUrl) {
-      // In a real app, this would trigger the download
-      window.open(resultUrl, '_blank')
-      toast.success('Download ready! Your AI-converted presentation is downloading.')
+  const handleDownload = async () => {
+    if (uploadId) {
+      await downloadFile(uploadId);
+      toast.success(
+        "Download ready! Your AI-converted presentation is downloading."
+      );
+    } else {
+      toast.error("No file available for download.");
     }
-  }
+  };
 
   const handleNewConversion = () => {
-    reset()
-    toast.success('Ready for a new conversion!')
-  }
+    reset();
+    toast.success("Ready for a new conversion!");
+  };
 
   return (
     <div className="container py-12">
@@ -32,7 +49,7 @@ const Download = () => {
         className="max-w-2xl mx-auto"
       >
         <StepIndicator currentStep={3} />
-        
+
         <div className="text-center mb-8">
           <motion.div
             initial={{ scale: 0 }}
@@ -57,10 +74,11 @@ const Download = () => {
               <span>Download Your AI-Generated File</span>
             </CardTitle>
             <CardDescription>
-              Your PDF has been successfully converted using advanced AI technology
+              Your PDF has been successfully converted using advanced AI
+              technology
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent className="space-y-6">
             {/* File Info */}
             <motion.div
@@ -74,7 +92,8 @@ const Download = () => {
               </div>
               <div className="flex-1">
                 <h4 className="font-medium text-success-900 dark:text-success-100">
-                  {file?.name?.replace('.pdf', '.pptx') || 'ai-converted-presentation.pptx'}
+                  {file?.name?.replace(".pdf", ".pptx") ||
+                    "ai-converted-presentation.pptx"}
                 </h4>
                 <p className="text-sm text-success-600 dark:text-success-400">
                   AI-Enhanced PowerPoint • Ready to download
@@ -96,8 +115,8 @@ const Download = () => {
                 AI-Enhanced Presentation
               </h4>
               <p className="text-sm text-secondary-600 dark:text-secondary-400">
-                Your presentation has been optimized with intelligent layout recognition, 
-                perfect text extraction, and enhanced formatting
+                Your presentation has been optimized with intelligent layout
+                recognition, perfect text extraction, and enhanced formatting
               </p>
             </motion.div>
 
@@ -114,35 +133,51 @@ const Download = () => {
               </h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-secondary-600 dark:text-secondary-400">Original format:</span>
-                  <span className="font-medium text-secondary-900 dark:text-white">PDF</span>
+                  <span className="text-secondary-600 dark:text-secondary-400">
+                    Original format:
+                  </span>
+                  <span className="font-medium text-secondary-900 dark:text-white">
+                    PDF
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-secondary-600 dark:text-secondary-400">Output format:</span>
-                  <span className="font-medium text-secondary-900 dark:text-white">PowerPoint (.pptx)</span>
+                  <span className="text-secondary-600 dark:text-secondary-400">
+                    Output format:
+                  </span>
+                  <span className="font-medium text-secondary-900 dark:text-white">
+                    PowerPoint (.pptx)
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-secondary-600 dark:text-secondary-400">AI processing time:</span>
-                  <span className="font-medium text-secondary-900 dark:text-white">45 seconds</span>
+                  <span className="text-secondary-600 dark:text-secondary-400">
+                    AI processing time:
+                  </span>
+                  <span className="font-medium text-secondary-900 dark:text-white">
+                    45 seconds
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-secondary-600 dark:text-secondary-400">Quality enhancement:</span>
-                  <span className="font-medium text-accent-600">AI-Optimized</span>
+                  <span className="text-secondary-600 dark:text-secondary-400">
+                    Quality enhancement:
+                  </span>
+                  <span className="font-medium text-accent-600">
+                    AI-Optimized
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-secondary-600 dark:text-secondary-400">Status:</span>
-                  <span className="font-medium text-success-600">Completed</span>
+                  <span className="text-secondary-600 dark:text-secondary-400">
+                    Status:
+                  </span>
+                  <span className="font-medium text-success-600">
+                    Completed
+                  </span>
                 </div>
               </div>
             </motion.div>
           </CardContent>
-          
+
           <CardFooter className="flex flex-col sm:flex-row gap-3">
-            <Button
-              onClick={handleDownload}
-              className="flex-1 group"
-              size="lg"
-            >
+            <Button onClick={handleDownload} className="flex-1 group" size="lg">
               <DownloadIcon className="mr-2 h-5 w-5 group-hover:translate-y-0.5 transition-transform" />
               Download AI-Enhanced PowerPoint
             </Button>
@@ -167,7 +202,7 @@ const Download = () => {
         </Card>
       </motion.div>
     </div>
-  )
-}
+  );
+};
 
-export default Download
+export default Download;
