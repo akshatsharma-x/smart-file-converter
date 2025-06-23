@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckCircle, AlertCircle } from 'lucide-react'
@@ -17,6 +17,8 @@ const ProcessingPage = () => {
   const { file, uploadId, progress, status, setResultUrl } = useConversionStore()
   const { checkStatus, isChecking } = useConvert()
   const [currentStatusIndex, setCurrentStatusIndex] = useState(0)
+  const hasShownSuccessToast = useRef(false)
+  const intervalRef = useRef(null)
 
   const statusMessages = [
     'Analyzing page layout with AI...',
@@ -38,9 +40,25 @@ const ProcessingPage = () => {
         const result = await checkStatus(uploadId)
         if (result.status === 'completed' && result.downloadUrl) {
           setResultUrl(result.downloadUrl)
-          toast.success('AI conversion completed successfully!')
+          
+          // Only show success toast once
+          if (!hasShownSuccessToast.current) {
+            toast.success('AI conversion completed successfully!')
+            hasShownSuccessToast.current = true
+          }
+          
+          // Clear interval before navigation
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+          }
+          
           navigate('/download')
         } else if (result.status === 'error') {
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+          }
           toast.error('AI conversion failed. Please try again.')
         }
       } catch (error) {
@@ -57,12 +75,18 @@ const ProcessingPage = () => {
     setCurrentStatusIndex(messageIndex)
 
     // Poll every 2 seconds
-    const interval = setInterval(pollStatus, 2000)
+    intervalRef.current = setInterval(pollStatus, 2000)
     
     // Initial check
     pollStatus()
 
-    return () => clearInterval(interval)
+    // Cleanup function
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
   }, [uploadId, navigate, checkStatus, setResultUrl, progress, statusMessages.length])
 
   const getStatusIcon = () => {

@@ -7,6 +7,8 @@ export const useConvert = () => {
   const { setStatus, setProgress } = useConversionStore()
 
   const checkStatus = async (uploadId) => {
+    if (isChecking) return // Prevent multiple simultaneous calls
+    
     setIsChecking(true)
 
     try {
@@ -16,7 +18,10 @@ export const useConvert = () => {
       switch (result.status) {
         case 'processing':
           setStatus('processing')
-          setProgress(prev => Math.min(prev + 10, 90))
+          // Only update progress if it's actually increasing
+          if (result.progress && result.progress > 0) {
+            setProgress(result.progress)
+          }
           break
         case 'completed':
           setStatus('completed')
