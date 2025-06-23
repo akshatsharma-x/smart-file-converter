@@ -22,6 +22,7 @@ app.config['CONVERTED_FOLDER'] = CONVERTED_FOLDER
 CORS(app, origins=[
     "http://localhost:3000",
     "https://smart-file-converter.vercel.app",  
+    "https://pdf-2-ppt.vercel.app",
 ])
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
