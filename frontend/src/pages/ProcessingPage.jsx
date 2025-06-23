@@ -18,7 +18,9 @@ const ProcessingPage = () => {
   const { checkStatus, isChecking } = useConvert()
   const [currentStatusIndex, setCurrentStatusIndex] = useState(0)
   const hasShownSuccessToast = useRef(false)
+  const hasShownErrorToast = useRef(false)
   const intervalRef = useRef(null)
+  const isPolling = useRef(false)
 
   const statusMessages = [
     'Analyzing page layout with AI...',
@@ -36,8 +38,19 @@ const ProcessingPage = () => {
     }
 
     const pollStatus = async () => {
+      // Prevent multiple simultaneous polling
+      if (isPolling.current) return
+      
+      isPolling.current = true
+      
       try {
         const result = await checkStatus(uploadId)
+        
+        // Check if result is defined before accessing its properties
+        if (!result) {
+          return
+        }
+        
         if (result.status === 'completed' && result.downloadUrl) {
           setResultUrl(result.downloadUrl)
           
@@ -55,15 +68,34 @@ const ProcessingPage = () => {
           
           navigate('/download')
         } else if (result.status === 'error') {
+          // Clear interval on error
           if (intervalRef.current) {
             clearInterval(intervalRef.current)
             intervalRef.current = null
           }
-          toast.error('AI conversion failed. Please try again.')
+          
+          // Only show error toast once
+          if (!hasShownErrorToast.current) {
+            toast.error('AI conversion failed. Please try again.')
+            hasShownErrorToast.current = true
+          }
         }
       } catch (error) {
         console.error('Status check failed:', error)
-        toast.error('Connection error. Retrying...')
+        
+        // Only show connection error toast once
+        if (!hasShownErrorToast.current) {
+          toast.error('Connection error. Please check your internet connection.')
+          hasShownErrorToast.current = true
+        }
+        
+        // Clear interval on persistent errors
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+          intervalRef.current = null
+        }
+      } finally {
+        isPolling.current = false
       }
     }
 
@@ -74,7 +106,13 @@ const ProcessingPage = () => {
     )
     setCurrentStatusIndex(messageIndex)
 
-    // Poll every 2 seconds
+    // Clear any existing interval before setting a new one
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+
+    // Set up polling interval
     intervalRef.current = setInterval(pollStatus, 2000)
     
     // Initial check
@@ -86,6 +124,7 @@ const ProcessingPage = () => {
         clearInterval(intervalRef.current)
         intervalRef.current = null
       }
+      isPolling.current = false
     }
   }, [uploadId, navigate, checkStatus, setResultUrl, progress, statusMessages.length])
 

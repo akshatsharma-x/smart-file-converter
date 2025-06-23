@@ -1,15 +1,18 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useConversionStore } from './useConversionStore'
 import { checkConversionStatus } from '../services/api'
 
 export const useConvert = () => {
   const [isChecking, setIsChecking] = useState(false)
   const { setStatus, setProgress } = useConversionStore()
+  const lastCallRef = useRef(null)
 
   const checkStatus = async (uploadId) => {
-    if (isChecking) return // Prevent multiple simultaneous calls
+    // Prevent multiple simultaneous calls for the same uploadId
+    if (isChecking || lastCallRef.current === uploadId) return
     
     setIsChecking(true)
+    lastCallRef.current = uploadId
 
     try {
       const result = await checkConversionStatus(uploadId)
@@ -38,6 +41,7 @@ export const useConvert = () => {
       throw error
     } finally {
       setIsChecking(false)
+      lastCallRef.current = null
     }
   }
 
