@@ -1,4 +1,4 @@
-# PDF to PowerPoint Converter
+# PDF2PPT.AI
 
 A modern, responsive web application built with React and Tailwind CSS for converting PDF documents to PowerPoint presentations. This project provides a complete frontend scaffold ready for backend integration.
 
