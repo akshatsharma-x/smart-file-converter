@@ -166,6 +166,31 @@ Global state is managed with Zustand:
 // Example usage
 const { file, setFile, progress, setProgress } = useConversionStore()
 ```
+## Add Dockerfile
+Folder structure
+smart-file-converter
+├── backend/
+│   ├── Dockerfile
+│   └── main.py + requirements.txt
+├── frontend/
+│   ├── Dockerfile
+│   └── index.html + package.json + other frontend files
+└── Caddyfile
+
+### Prerequisites
+
+- Docker & Docker Compose
+- Git
+- (Optional) Domain name if deploying publicly
+
+---
+
+## 🐳 Running the App with Docker
+
+# Step 1: Build Frontend Docker Image
+# Step 2: Build Backend Docker Image
+# Step 3: Caddyfile for Reverse Proxy
+
 
 ## 🚀 Deployment
 
