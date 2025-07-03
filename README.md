@@ -168,6 +168,7 @@ const { file, setFile, progress, setProgress } = useConversionStore()
 ```
 ## Add Dockerfile
 Folder structure
+```
 smart-file-converter
 ├── backend/
 │   ├── Dockerfile
@@ -176,6 +177,7 @@ smart-file-converter
 │   ├── Dockerfile
 │   └── index.html + package.json + other frontend files
 └── Caddyfile
+```
 
 ### Prerequisites
 
