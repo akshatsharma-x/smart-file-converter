@@ -187,9 +187,9 @@ smart-file-converter
 
 ## 🐳 Running the App with Docker
 
-# Step 1: Build Frontend Docker Image
-# Step 2: Build Backend Docker Image
-# Step 3: Caddyfile for Reverse Proxy
+### Step 1: Build Frontend Docker Image
+### Step 2: Build Backend Docker Image
+### Step 3: Caddyfile for Reverse Proxy
 
 
 ## 🚀 Deployment
